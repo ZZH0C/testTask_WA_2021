@@ -21,4 +21,4 @@
 
 
 ## About
-  Since i never created slider by myself I made the wrong decision in the slider structure. For finger-following swipes i can use hiden side-scroll and scroll with fingerposition.
+Разработка заняла примерно 8 часов
