@@ -23,8 +23,7 @@ export default class TagList {
     const newTagButton = document.createElement('button');
     newTagButton.innerHTML = 'X';
 
-    newTagContainer.appendChild(newTagTextArea);
-    newTagContainer.appendChild(newTagButton);
+    newTagContainer.append(newTagTextArea, newTagButton);
     newTag.appendChild(newTagContainer);
 
     localStorage.setItem(tagId, tagText);
@@ -34,6 +33,8 @@ export default class TagList {
     }, false);
 
     this.tagAreaSelector.appendChild(newTag);
+
+    this.idForNewElem += 1;
   }
 
   deleteTag(id) {
@@ -84,7 +85,6 @@ export default class TagList {
     this.clearTagList();
     newTags.forEach((elem) => {
       this.addNewTag(elem.text, this.idForNewElem);
-      this.idForNewElem += 1;
     });
   }
 
@@ -115,8 +115,7 @@ export default class TagList {
     customizeAreaDelButton.id = 'customize-area_del-button';
     customizeAreaDelButton.innerHTML = 'Del';
 
-    container.appendChild(customizeArea);
-    container.appendChild(tagsArea);
+    container.append(customizeArea, tagsArea);
     appContainer.appendChild(container);
 
     customizeAreaContainer.append(
@@ -145,7 +144,6 @@ export default class TagList {
 
     this.addButtonSelector.addEventListener('click', () => {
       this.addNewTag(this.inputSelector.value, this.idForNewElem);
-      this.idForNewElem += 1;
     }, false);
 
     // добавлена для демонстрации метода setTagList
