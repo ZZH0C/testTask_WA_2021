@@ -11,7 +11,7 @@ body {
 }
 
 
-.app_container {
+.root {
     background: #bfff91;
 
     height: 400px;
