@@ -38,8 +38,10 @@ export default class TagList {
 
   deleteTag(id) {
     const tag = this.tagAreaSelector.querySelector(`[data-id="${id}"]`);
-    tag.remove();
-    localStorage.removeItem(id);
+    if (tag) {
+      tag.remove();
+      localStorage.removeItem(id);
+    }
   }
 
   setReadOnly() {
