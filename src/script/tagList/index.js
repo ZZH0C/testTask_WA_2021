@@ -1,16 +1,16 @@
 export default class TagList {
   constructor(root) {
+    this.root = root;
+
     this.idForNewElem = null;
     this.keys = null;
-
-    this.root = root;
 
     this.inputSelector = null;
     this.addButtonSelector = null;
     this.setButtonSelector = null;
     this.delButtonSelector = null;
     this.checkboxSelector = null;
-    this.tagArea = null;
+    this.tagAreaSelector = null;
   }
 
   addNewTag(tagText, tagId) {
@@ -30,17 +30,16 @@ export default class TagList {
     localStorage.setItem(tagId, tagText);
 
     newTagButton.addEventListener('click', () => {
-      newTagContainer.remove();
-      localStorage.removeItem(tagId);
+      this.deleteTag(tagId);
     }, false);
 
-    this.tagArea.appendChild(newTag);
+    this.tagAreaSelector.appendChild(newTag);
   }
 
   deleteTag(id) {
-    this.tagArea.childNodes.forEach((elem) => {
-      if (elem.dataset.id === id) elem.remove();
-    });
+    const tag = this.tagAreaSelector.querySelector(`[data-id="${id}"]`);
+    tag.remove();
+    localStorage.removeItem(id);
   }
 
   setReadOnly() {
@@ -52,6 +51,7 @@ export default class TagList {
 
   getLocalStorageItems() {
     this.keys = Object.keys(localStorage).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+    this.addLocalStorageItems();
   }
 
   addLocalStorageItems() {
@@ -61,16 +61,16 @@ export default class TagList {
   }
 
   clearTagList() {
-    while (this.tagArea.childNodes.length > 0) {
-      localStorage.removeItem(this.tagArea.childNodes[0].dataset.id);
-      this.tagArea.childNodes[0].remove();
+    while (this.tagAreaSelector.childNodes.length > 0) {
+      localStorage.removeItem(this.tagAreaSelector.childNodes[0].dataset.id);
+      this.tagAreaSelector.childNodes[0].remove();
     }
     this.idForNewElem = 0;
   }
 
   getTagList() {
     const tagList = [];
-    this.tagArea.childNodes.forEach((elem) => {
+    this.tagAreaSelector.childNodes.forEach((elem) => {
       tagList.push({
         text: elem.childNodes[0].innerHTML,
       });
@@ -98,7 +98,6 @@ export default class TagList {
     tagsArea.classList.add('tags-area_container');
 
     const customizeAreaInput = document.createElement('input');
-    document.createElement('input');
     customizeAreaInput.id = 'customize-area_input';
     customizeAreaInput.type = 'text';
     const customizeAreaCheckbox = document.createElement('input');
@@ -118,25 +117,24 @@ export default class TagList {
     container.appendChild(tagsArea);
     appContainer.appendChild(container);
 
-    customizeAreaContainer.appendChild(customizeAreaInput);
-    customizeAreaContainer.appendChild(customizeAreaCheckbox);
-    customizeAreaContainer.appendChild(customizeAreaAddButton);
-    customizeAreaContainer.appendChild(customizeAreaSetButton);
-    customizeAreaContainer.appendChild(customizeAreaDelButton);
+    customizeAreaContainer.append(
+      customizeAreaInput,
+      customizeAreaCheckbox,
+      customizeAreaAddButton,
+      customizeAreaSetButton,
+      customizeAreaDelButton,
+    );
 
-    const customizeAreaSelector = document.querySelector('.customize-area_container');
-    customizeAreaSelector.appendChild(customizeAreaContainer);
+    customizeArea.appendChild(customizeAreaContainer);
 
-    this.inputSelector = document.getElementById('customize-area_input');
-    this.addButtonSelector = document.getElementById('customize-area_add-button');
-    this.setButtonSelector = document.getElementById('customize-area_set-button');
-    this.delButtonSelector = document.getElementById('customize-area_del-button');
-    this.checkboxSelector = document.getElementById('read-only_checkbox');
-
-    this.tagArea = document.querySelector('.tags-area_container');
+    this.inputSelector = customizeAreaInput;
+    this.addButtonSelector = customizeAreaAddButton;
+    this.setButtonSelector = customizeAreaSetButton;
+    this.delButtonSelector = customizeAreaDelButton;
+    this.checkboxSelector = customizeAreaCheckbox;
+    this.tagAreaSelector = tagsArea;
 
     this.getLocalStorageItems();
-    this.addLocalStorageItems();
 
     this.idForNewElem = parseInt(this.keys[this.keys.length - 1], 10) + 1;
     if (Number.isNaN(this.idForNewElem)) {
@@ -148,6 +146,8 @@ export default class TagList {
       this.idForNewElem += 1;
     }, false);
 
+    // добавлена для демонстрации метода setTagList
+    // в данном случае добавляет пресет
     this.setButtonSelector.addEventListener('click', () => {
       this.setTagList([
         { text: 1 },
@@ -156,6 +156,8 @@ export default class TagList {
       ]);
     }, false);
 
+    // добавлена для демонстрации метода deleteTag
+    // в данном случае удаляет элемен с id = input
     this.delButtonSelector.addEventListener('click', () => {
       this.deleteTag(this.inputSelector.value);
     }, false);
