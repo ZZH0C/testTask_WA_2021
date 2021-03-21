@@ -1,12 +1,14 @@
 export default class TagList {
-  constructor() {
+  constructor(root) {
     this.idForNewElem = null;
     this.keys = null;
 
-    this.root = document.querySelector('.root');
+    this.root = root;
 
     this.inputSelector = null;
-    this.buttonSelector = null;
+    this.addButtonSelector = null;
+    this.setButtonSelector = null;
+    this.delButtonSelector = null;
     this.checkboxSelector = null;
     this.tagArea = null;
   }
@@ -35,8 +37,14 @@ export default class TagList {
     this.tagArea.appendChild(newTag);
   }
 
-  readOnlySet() {
-    const buttons = document.getElementsByTagName('button');
+  deleteTag(id) {
+    this.tagArea.childNodes.forEach((elem) => {
+      if (elem.dataset.id === id) elem.remove();
+    });
+  }
+
+  setReadOnly() {
+    const buttons = this.root.getElementsByTagName('button');
     for (let i = 0; i < buttons.length; i += 1) {
       buttons[i].disabled = this.checkboxSelector.checked;
     }
@@ -52,9 +60,38 @@ export default class TagList {
     });
   }
 
+  clearTagList() {
+    while (this.tagArea.childNodes.length > 0) {
+      localStorage.removeItem(this.tagArea.childNodes[0].dataset.id);
+      this.tagArea.childNodes[0].remove();
+    }
+    this.idForNewElem = 0;
+  }
+
+  getTagList() {
+    const tagList = [];
+    this.tagArea.childNodes.forEach((elem) => {
+      tagList.push({
+        text: elem.childNodes[0].innerHTML,
+      });
+    });
+    return tagList;
+  }
+
+  setTagList(newTags) {
+    this.clearTagList();
+    newTags.forEach((elem) => {
+      this.addNewTag(elem.text, this.idForNewElem);
+      this.idForNewElem += 1;
+    });
+  }
+
   init() {
     const container = document.createDocumentFragment();
     const customizeAreaContainer = document.createDocumentFragment();
+    const appContainer = document.createElement('div');
+    appContainer.classList.add('app_container');
+    this.root.appendChild(appContainer);
     const customizeArea = document.createElement('div');
     customizeArea.classList.add('customize-area_container');
     const tagsArea = document.createElement('div');
@@ -67,23 +104,35 @@ export default class TagList {
     const customizeAreaCheckbox = document.createElement('input');
     customizeAreaCheckbox.id = 'read-only_checkbox';
     customizeAreaCheckbox.type = 'checkbox';
-    const customizeAreaButton = document.createElement('button');
-    customizeAreaButton.id = 'customize-area_button';
-    customizeAreaButton.innerHTML = 'Add';
+    const customizeAreaAddButton = document.createElement('button');
+    customizeAreaAddButton.id = 'customize-area_add-button';
+    customizeAreaAddButton.innerHTML = 'Add';
+    const customizeAreaSetButton = document.createElement('button');
+    customizeAreaSetButton.id = 'customize-area_set-button';
+    customizeAreaSetButton.innerHTML = 'Set';
+    const customizeAreaDelButton = document.createElement('button');
+    customizeAreaDelButton.id = 'customize-area_del-button';
+    customizeAreaDelButton.innerHTML = 'Del';
 
     container.appendChild(customizeArea);
     container.appendChild(tagsArea);
-    this.root.appendChild(container);
+    appContainer.appendChild(container);
 
     customizeAreaContainer.appendChild(customizeAreaInput);
     customizeAreaContainer.appendChild(customizeAreaCheckbox);
-    customizeAreaContainer.appendChild(customizeAreaButton);
+    customizeAreaContainer.appendChild(customizeAreaAddButton);
+    customizeAreaContainer.appendChild(customizeAreaSetButton);
+    customizeAreaContainer.appendChild(customizeAreaDelButton);
+
     const customizeAreaSelector = document.querySelector('.customize-area_container');
     customizeAreaSelector.appendChild(customizeAreaContainer);
 
     this.inputSelector = document.getElementById('customize-area_input');
-    this.buttonSelector = document.getElementById('customize-area_button');
+    this.addButtonSelector = document.getElementById('customize-area_add-button');
+    this.setButtonSelector = document.getElementById('customize-area_set-button');
+    this.delButtonSelector = document.getElementById('customize-area_del-button');
     this.checkboxSelector = document.getElementById('read-only_checkbox');
+
     this.tagArea = document.querySelector('.tags-area_container');
 
     this.getLocalStorageItems();
@@ -94,13 +143,25 @@ export default class TagList {
       this.idForNewElem = 0;
     }
 
-    this.buttonSelector.addEventListener('click', () => {
+    this.addButtonSelector.addEventListener('click', () => {
       this.addNewTag(this.inputSelector.value, this.idForNewElem);
       this.idForNewElem += 1;
     }, false);
 
+    this.setButtonSelector.addEventListener('click', () => {
+      this.setTagList([
+        { text: 1 },
+        { text: 2 },
+        { text: 3 },
+      ]);
+    }, false);
+
+    this.delButtonSelector.addEventListener('click', () => {
+      this.deleteTag(this.inputSelector.value);
+    }, false);
+
     this.checkboxSelector.addEventListener('change', () => {
-      this.readOnlySet();
+      this.setReadOnly();
     });
   }
 }

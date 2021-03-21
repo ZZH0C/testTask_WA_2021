@@ -10,8 +10,7 @@ body {
     justify-content: space-around;
 }
 
-
-.root {
+.app_container{
     background: #bfff91;
 
     height: 400px;
@@ -34,6 +33,10 @@ body {
     justify-content: space-around;
 
     background: coral;
+}
+
+.customize-area_container > button {
+padding: 0;
 }
 
 .tags-area_container {
