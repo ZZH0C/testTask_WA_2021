@@ -1,6 +1,6 @@
 # Test task WA 2021
 ### Demo
-  Here is [Link](https://silly-meninsky-8c1824.netlify.app/)
+  Here is [Link](https://test-task-wa-2021-lutsevich-stanislau.netlify.app/)
 
 ## The requirements:
 
