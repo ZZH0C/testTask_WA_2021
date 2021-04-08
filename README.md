@@ -1,6 +1,11 @@
 # Test task WA 2021
 ### Демо
   Вот [ссылка](https://test-task-wa-2021-lutsevich-stanislau.netlify.app/)
+  
+  Внешний вид приложения
+
+![image](https://user-images.githubusercontent.com/55091338/114020150-f1314400-9877-11eb-94af-d3de7c2491c3.png)
+
 
 ## О проекте
 Проект представляет собой компонент по добавлению и изменению тэгов.
